@@ -1,7 +1,8 @@
 import React from "react";
+import Routes from "./Routes";
 
 function App() {
-  return <h2>imed ben azouna</h2>;
+  return <Routes />;
 }
 
 export default App;
