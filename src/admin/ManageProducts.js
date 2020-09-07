@@ -19,7 +19,7 @@ const ManageProducts = (props) => {
     setLoading(true);
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/product/list`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/product/list`,
         method: 'GET',
       });
       if (res.data.status === 'success') {
@@ -38,7 +38,7 @@ const ManageProducts = (props) => {
     setLoading(true);
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/product/${productId}/${userData._id}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/product/${productId}/${userData._id}`,
         method: 'DELETE',
         headers: {
           Authorization: 'Bearer ' + jwt,

@@ -46,7 +46,7 @@ const AddProduct = (props) => {
   const findCategory = async () => {
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/category/all`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/category/all`,
       });
       if (res.data.status === 'success') {
         setValues({
@@ -76,7 +76,7 @@ const AddProduct = (props) => {
 
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/product/create/${userData._id}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/product/create/${userData._id}`,
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + jwt,

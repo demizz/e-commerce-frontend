@@ -11,10 +11,18 @@ const Login = (props) => {
     error: false,
     loading: false,
     redirectToReferrer: false,
-    errorMessage:'',
-    success:false
+    errorMessage: '',
+    success: false,
   });
-  const { email, password, loading, error,errorMessage,success, redirectToReferrer } = values;
+  const {
+    email,
+    password,
+    loading,
+    error,
+    errorMessage,
+    success,
+    redirectToReferrer,
+  } = values;
   const handleChange = (name) => (event) => {
     setValues({ ...values, error: false, [name]: event.target.value });
   };
@@ -24,38 +32,37 @@ const Login = (props) => {
     setValues({
       ...values,
       error: false,
-      errorMessage:'',
+      errorMessage: '',
       loading: true,
       redirectToReferrer: false,
-      success:false
+      success: false,
     });
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/auth/login`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/auth/login`,
         method: 'POST',
         data: { email, password },
       });
-     
+
       if (res.data.status === 'succes') {
         if (typeof window !== undefined) {
           localStorage.setItem('jwt', res.data.token);
-         
+
           localStorage.setItem('data', JSON.stringify(res.data.user));
         }
         setValues({
           ...values,
-          error:false,
-          errorMessage:false,
+          error: false,
+          errorMessage: false,
           success: true,
           loading: false,
           redirectToReferrer: true,
         });
       }
     } catch (err) {
-      
       setValues({
         ...values,
-        error:true,
+        error: true,
         errorMessage: err.response.data.message,
         success: false,
         loading: false,
@@ -117,7 +124,7 @@ const Login = (props) => {
           />
         </div>
         <button onClick={submitHandler} className="btn btn-primary">
-         Login
+          Login
         </button>
       </form>
     );
@@ -128,7 +135,6 @@ const Login = (props) => {
       className="container col-md-8 offset-md-2"
       description="signup to Node React E-commerce App"
     >
-     
       {showLoading()}
       {showError()}
       {LoginForm()}

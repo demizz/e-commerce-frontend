@@ -48,7 +48,7 @@ const UpdateProduct = (props) => {
     setValues({ ...values, loading: true });
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/product/${productId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/product/${productId}`,
         method: 'GET',
         headers: {
           Authorization: 'Bearer ' + jwt,
@@ -80,7 +80,7 @@ const UpdateProduct = (props) => {
   const findCategory = async () => {
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/category/all`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/category/all`,
       });
       if (res.data.status === 'success') {
         setValues({
@@ -105,7 +105,7 @@ const UpdateProduct = (props) => {
 
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/product/${productId}/${userData._id}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/product/${productId}/${userData._id}`,
         method: 'PUT',
         headers: {
           Authorization: 'Bearer ' + jwt,

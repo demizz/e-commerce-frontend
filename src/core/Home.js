@@ -13,7 +13,7 @@ const Home = (props) => {
   const loadProductBySell = async () => {
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/product/list?sortBy=sold&order=desc&limit=100`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/product/list?sortBy=sold&order=desc&limit=100`,
       });
       if (res.data.status === 'success') {
         setProductBySell(res.data.listProduct);
@@ -29,7 +29,7 @@ const Home = (props) => {
     setLoading(true);
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/product/list?sortBy=createdAt&order=desc&limit=100`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/product/list?sortBy=createdAt&order=desc&limit=100`,
       });
       if (res.data.status === 'success') {
         setProductByArrival(res.data.listProduct);

@@ -17,7 +17,7 @@ const Product = (props) => {
     try {
       setLoading(true);
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/product/${productId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/product/${productId}`,
       });
       if (res.data.status === 'success') {
         setProduct(res.data.product);
@@ -33,7 +33,7 @@ const Product = (props) => {
   const listRelated = async (pId) => {
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/product/related/${pId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/product/related/${pId}`,
       });
       if (res.data.status === 'success') {
         setRelatedProduct(res.data.relatedProduct);

@@ -22,7 +22,7 @@ const Checkout = (props) => {
   const getBraintreeToken = async () => {
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/braintree/getToken/${userData._id}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/braintree/getToken/${userData._id}`,
         headers: {
           Authorization: 'Bearer ' + jwt,
         },
@@ -37,7 +37,7 @@ const Checkout = (props) => {
   const createOrder = async (createOrderData) => {
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/order/create/${userData._id}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/order/create/${userData._id}`,
         method: 'POST',
         headers: {
           Authorization: 'Bearer ' + jwt,
@@ -53,7 +53,7 @@ const Checkout = (props) => {
   const processPayment = async (payment) => {
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/braintree/payment/${userData._id}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/braintree/payment/${userData._id}`,
         method: 'POST',
         data: payment,
         headers: {

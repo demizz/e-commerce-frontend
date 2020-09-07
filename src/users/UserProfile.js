@@ -33,7 +33,7 @@ const UserProfile = (props) => {
     });
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/user/${userId.userId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/user/${userId.userId}`,
         headers: {
           Authorization: 'Bearer ' + jwt,
         },
@@ -68,7 +68,7 @@ const UserProfile = (props) => {
     });
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/user/update/${userId.userId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/user/update/${userId.userId}`,
         method: 'PUT',
         headers: {
           Authorization: 'Bearer ' + jwt,

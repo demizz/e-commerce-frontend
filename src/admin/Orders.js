@@ -9,7 +9,7 @@ const Orders = (props) => {
   const loadOrders = async () => {
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/order/list/${userData._id}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/order/list/${userData._id}`,
         headers: {
           authorization: 'Bearer ' + jwt,
         },
@@ -22,7 +22,7 @@ const Orders = (props) => {
   const getStatusValues = async () => {
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/order/status-values/${userData._id}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/order/status-values/${userData._id}`,
         headers: {
           authorization: 'Bearer ' + jwt,
         },
@@ -58,7 +58,7 @@ const Orders = (props) => {
   const handleStatusChange = async (event, orderId) => {
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/order/update-order/${orderId}/${userData._id}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/order/update-order/${orderId}/${userData._id}`,
         method: 'PUT',
         headers: {
           authorization: 'Bearer ' + jwt,

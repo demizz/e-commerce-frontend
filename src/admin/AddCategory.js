@@ -26,7 +26,7 @@ const AddCategory = (props) => {
     try {
       setWaiting(true);
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/category/create/${userData.userId}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/category/create/${userData.userId}`,
         method: 'POST',
         data: { name: categoryName },
         headers: {

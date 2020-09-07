@@ -22,7 +22,7 @@ const Shop = (props) => {
   const getCategories = async () => {
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/category/all`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/category/all`,
       });
       if (res.data.status === 'success') {
         setData(res.data.category);
@@ -52,7 +52,7 @@ const Shop = (props) => {
     setLoading(true);
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/product/by/search`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/product/by/search`,
         method: 'POST',
         data,
       });
@@ -78,7 +78,7 @@ const Shop = (props) => {
 
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/product/by/search`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/product/by/search`,
         method: 'POST',
         data,
       });

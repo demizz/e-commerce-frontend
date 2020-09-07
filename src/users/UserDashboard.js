@@ -88,7 +88,7 @@ const UserDashbord = (props) => {
     setLoading(true);
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/user/orders/by/${_id}`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/user/orders/by/${_id}`,
 
         headers: {
           Authorization: 'Bearer ' + jwt,

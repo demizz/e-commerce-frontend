@@ -18,7 +18,7 @@ const Search = (props) => {
   const getCategories = async () => {
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/category/all`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/category/all`,
       });
       if (res.data.status === 'success') {
         setData({ ...data, categories: res.data.category });
@@ -42,7 +42,7 @@ const Search = (props) => {
 
       try {
         const res = await axios({
-          url: `http://127.0.0.1:8000/api/v1/product/search?${query}`,
+          url: `${process.env.REACT_APP_BACKEND_URL}/product/search?${query}`,
         });
         if (res.data.status === 'success') {
           setData({

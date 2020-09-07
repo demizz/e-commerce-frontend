@@ -37,7 +37,7 @@ const Signup = (props) => {
     });
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/auth/signup`,
+        url: `${process.env.REACT_APP_BACKEND_URL}/auth/signup`,
         method: 'POST',
         data: { name, email, password },
       });
