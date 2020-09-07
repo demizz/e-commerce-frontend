@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../core/Layout';
 import { isAuth } from '../auth/auth';
-import { Link } from 'react-router-dom';
-import { createCategory } from './apiAdmin';
+
 import axios from 'axios';
 
 const AddCategory = (props) => {
@@ -10,6 +9,7 @@ const AddCategory = (props) => {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [success, setSuccess] = useState(false);
+  const [waiting, setWaiting] = useState(false);
 
   const { jwt, userData } = isAuth();
 
@@ -22,7 +22,9 @@ const AddCategory = (props) => {
     e.preventDefault();
     setError(false);
     setSuccess(false);
+
     try {
+      setWaiting(true);
       const res = await axios({
         url: `http://127.0.0.1:8000/api/v1/category/create/${userData.userId}`,
         method: 'POST',
@@ -31,25 +33,38 @@ const AddCategory = (props) => {
           Authorization: 'Bearer ' + jwt,
         },
       });
-      console.log(res);
+
       if (res.data.status === 'success') {
         setError(false);
         setSuccess(true);
+        setWaiting(false);
       }
     } catch (err) {
       setError(true);
       setErrorMessage(err.response.data.message);
-      console.log(err.response.data.message);
+      setWaiting(false);
     }
   };
   const showSuccess = () => {
     if (success) {
-      return <h3 className="text-success">{categoryName} is created</h3>;
+      return (
+        <h3 className="bg-success d-block mb-4 p-2">
+          {categoryName} is created
+        </h3>
+      );
     }
+    setTimeout(() => {
+      setSuccess(false);
+    }, 5000);
   };
   const showError = () => {
     if (error) {
-      return <h3 className="text-danger">{errorMessage} </h3>;
+      return <h3 className="bg-danger d-block mb-4 p-2">{errorMessage} </h3>;
+    }
+  };
+  const showWaiting = () => {
+    if (waiting && !error && !success) {
+      return <h2 className="bg-info d-block mb-4 p-2">Waiting ....</h2>;
     }
   };
   const newCategoryForm = () => {
@@ -78,6 +93,7 @@ const AddCategory = (props) => {
     >
       <div className="row">
         <div className="col-8 offset-md-2">
+          {showWaiting()}
           {showSuccess()}
           {showError()}
           {newCategoryForm()}

@@ -15,8 +15,13 @@ import PrivateRoute from './auth/PrivateRoutes';
 import AdminRoutes from './auth/AdminRoutes';
 import AddCategory from './admin/AddCategory';
 import AddProduct from './admin/AddProduct';
+import Orders from './admin/Orders';
+import UserProfile from './users/UserProfile';
+import ManageProducts from './admin/ManageProducts';
+import UpdateProduct from './admin/UpdateProduct';
 import Shop from './core/Shop';
-
+import Product from './core/Product';
+import Cart from './core/Cart';
 const Routes = () => {
   return (
     <div>
@@ -25,33 +30,49 @@ const Routes = () => {
         <Switch>
           <Route path="/" exact>
             <Home />
-          </Route>
+          </Route>{' '}
+          <Route path="/cart" exact>
+            <Cart />
+          </Route>{' '}
           <Route path="/shop" exact>
             <Shop />
-          </Route>
+          </Route>{' '}
           <Route path="/signup" exact>
             <Signup />
-          </Route>
+          </Route>{' '}
           <Route path="/login" exact>
             <Login />
+          </Route>{' '}
+          <Route path="/product/:productId" exact>
+            <Product />
           </Route>
-
           <PrivateRoute
             path="/user/dashboard"
             exact
             component={UserDashboard}
-          />
+          />{' '}
+          <PrivateRoute path="/profile/:userId" exact component={UserProfile} />{' '}
           <AdminRoutes
             path="/admin/dashboard"
             exact
             component={AdminDashboard}
-          />
-          <AdminRoutes path="/create/Category" exact component={AddCategory} />
+          />{' '}
+          <AdminRoutes path="/create/Category" exact component={AddCategory} />{' '}
+          <AdminRoutes path="/admin/orders" exact component={Orders} />{' '}
+          <AdminRoutes
+            path="/admin/product/update/:productId"
+            exact
+            component={UpdateProduct}
+          />{' '}
+          <AdminRoutes
+            path="/admin/products"
+            exact
+            component={ManageProducts}
+          />{' '}
           <AdminRoutes path="/create/Product" exact component={AddProduct} />
-
           <Redirect to="/" />
-        </Switch>
-      </Router>
+        </Switch>{' '}
+      </Router>{' '}
     </div>
   );
 };

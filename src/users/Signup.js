@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Layout from '../core/Layout';
-import { URL } from '../config.js';
+
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 const Signup = (props) => {
@@ -8,17 +8,33 @@ const Signup = (props) => {
     name: '',
     email: '',
     password: '',
-    error: '',
-    success: 'false',
+    error: false,
+    errorMessage: '',
+    success: false,
+    loading: false,
   });
   const handleChange = (name) => (event) => {
     setValues({ ...values, error: false, [name]: event.target.value });
   };
-  const { name, email, password, success, error } = values;
+  const {
+    name,
+    email,
+    password,
+    success,
+    error,
+    errorMessage,
+    loading,
+  } = values;
 
   const submitHandler = async (event) => {
     event.preventDefault();
-    setValues({ ...values, error: false });
+    setValues({
+      ...values,
+      error: false,
+      errorMessage: '',
+      success: false,
+      loading: true,
+    });
     try {
       const res = await axios({
         url: `http://127.0.0.1:8000/api/v1/auth/signup`,
@@ -32,17 +48,25 @@ const Signup = (props) => {
           name: '',
           email: '',
           password: '',
-          error: '',
+          error: false,
+          errorMessage: '',
           success: true,
+          loading: false,
         });
       }
     } catch (err) {
-      console.log(err.response.data.message);
       setValues({
         ...values,
-        error: err.response.data.message,
+        error: true,
+        errorMessage: err.response.data.message,
         success: false,
+        loading: false,
       });
+    }
+  };
+  const showLoading = () => {
+    if (loading && !error && !success) {
+      return <div className="alert alert-info">Waiting ...</div>;
     }
   };
   const showError = () => {
@@ -51,14 +75,14 @@ const Signup = (props) => {
         className="alert alert-danger"
         style={{ display: error ? '' : 'none' }}
       >
-        {error}
+        {errorMessage}
       </div>
     );
   };
   const showSuccess = () => {
     return (
       <div
-        className="alert alert-info"
+        className="alert alert-success"
         style={{ display: success ? '' : 'none' }}
       >
         new Account was created plus try to <Link to="/login">login</Link>
@@ -96,7 +120,7 @@ const Signup = (props) => {
           />
         </div>
         <button onClick={submitHandler} className="btn btn-primary">
-          Submit
+          Signup
         </button>
       </form>
     );
@@ -107,8 +131,7 @@ const Signup = (props) => {
       className="container col-md-8 offset-md-2"
       description="signup to Node React E-commerce App"
     >
-      {process.env.REACT_APP_BACKEND_URL}
-      {URL}
+      {showLoading()}
       {showSuccess()}
       {showError()}
       {signUpForm()}

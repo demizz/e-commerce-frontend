@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import Layout from '../core/Layout';
 import { isAuth } from '../auth/auth';
-import { Redirect } from 'react-router-dom';
+import { Link, useParams, Redirect } from 'react-router-dom';
 import axios from 'axios';
 
-const AddProduct = (props) => {
+const UpdateProduct = (props) => {
+  const { productId } = useParams();
   const [values, setValues] = useState({
     name: '',
     description: '',
@@ -18,7 +19,7 @@ const AddProduct = (props) => {
     error: false,
     errorMessage: '',
     cretedProduct: '',
-    redirectTo: false,
+    redirectToProfile: false,
     formData: null,
   });
   const {
@@ -26,23 +27,56 @@ const AddProduct = (props) => {
     description,
     price,
     categories,
+    errorMessage,
     category,
     shipping,
     quantity,
-    errorMessage,
+
     loading,
     error,
     createdProduct,
-    redirectTo,
+    redirectToProfile,
     formData,
   } = values;
   const { jwt, userData } = isAuth();
   const handleChange = (name) => (event) => {
     const value = name === 'photo' ? event.target.files[0] : event.target.value;
     setValues({ ...values, [name]: value });
-
     formData.set(name, value);
   };
+  const getProduct = async () => {
+    setValues({ ...values, loading: true });
+    try {
+      const res = await axios({
+        url: `http://127.0.0.1:8000/api/v1/product/${productId}`,
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + jwt,
+        },
+      });
+      if (res.data.status === 'success') {
+        setValues({
+          ...values,
+          name: res.data.product.name,
+          description: res.data.product.description,
+          price: res.data.product.price,
+          category: res.data.product.category,
+          shipping: res.data.product.shipping,
+          quantity: res.data.product.quantity,
+          formData: new FormData(),
+        });
+        findCategory();
+      }
+    } catch (err) {
+      setValues({
+        ...values,
+        error: true,
+        errorMessage: err.response.data.message,
+        loading: false,
+      });
+    }
+  };
+
   const findCategory = async () => {
     try {
       const res = await axios({
@@ -50,40 +84,34 @@ const AddProduct = (props) => {
       });
       if (res.data.status === 'success') {
         setValues({
-          ...values,
           categories: res.data.category,
+          loading: false,
           formData: new FormData(),
         });
       }
     } catch (err) {
       setValues({
         ...values,
-        error: false,
+        error: true,
         errorMessage: err.response.data.message,
+        loading: false,
       });
     }
   };
 
   const clickSubmit = async (event) => {
     event.preventDefault();
-    setValues({
-      ...values,
-      loading: true,
-      error: false,
-      errorMessage: '',
-      loading: true,
-    });
+    setValues({ ...values, loading: true, error: false, errorMessage: '' });
 
     try {
       const res = await axios({
-        url: `http://127.0.0.1:8000/api/v1/product/create/${userData._id}`,
-        method: 'POST',
+        url: `http://127.0.0.1:8000/api/v1/product/${productId}/${userData._id}`,
+        method: 'PUT',
         headers: {
           Authorization: 'Bearer ' + jwt,
         },
         data: formData,
       });
-
       if (res.data.status === 'success') {
         setValues({
           ...values,
@@ -96,23 +124,22 @@ const AddProduct = (props) => {
           createdProduct: res.data.newProduct.name,
           formData: null,
           error: false,
-          errorMessage: '',
-          redirectTo: true,
+          redirectToProfile: true,
         });
       }
     } catch (err) {
       setValues({
         ...values,
-        loading: false,
-        errorMessage: err.response.data.message,
         error: true,
+        errorMessage: err.response.data.message,
+        loading: false,
       });
     }
   };
-  useEffect(() => {
-    findCategory();
-  }, []);
 
+  useEffect(() => {
+    getProduct();
+  }, []);
   const newPostForm = () => {
     return (
       <form className="mb-3" onSubmit={clickSubmit}>
@@ -185,48 +212,52 @@ const AddProduct = (props) => {
             className="form-control"
           >
             <option> please Select</option>
-            <option value={false}>No</option>
-            <option value={true}>Yes</option>
+            <option value="0">No</option>
+            <option value="1">Yes</option>
           </select>
         </div>
-        <button className="btn btn-outline-primary">Create Product</button>
+        <button className="btn btn-outline-primary">update Product</button>
       </form>
     );
   };
-  const redirect = () => {
-    if (redirectTo && !loading && !error) {
-      return <Redirect to="/admin/products" />;
+  const redirectUser = () => {
+    if (redirectToProfile) {
+      if (!error) {
+        return <Redirect to="/admin/products" />;
+      }
     }
   };
   const showError = () => {
-    return (
-      <div
-        className="alert alert-danger"
-        style={{ display: error ? '' : 'none' }}
-      >
-        {errorMessage}
-      </div>
-    );
+    if (error && !loading) {
+      return (
+        <div
+          className="alert alert-danger"
+          style={{ display: error ? '' : 'none' }}
+        >
+          {errorMessage}
+        </div>
+      );
+    }
   };
   const showSuccess = () => {
     return (
       <div
-        className="alert alert-success"
+        className="alert alert-info"
         style={{ display: createdProduct ? '' : 'none' }}
       >
-        <h2>{`${createdProduct} is created`}</h2>
+        <h2>{`${createdProduct} is updated`}</h2>
       </div>
     );
   };
 
   const showLoading = () => {
-    return (
-      loading && (
-        <div className="alert alert-info">
+    if (loading && !error) {
+      return (
+        <div className="alert alert-success">
           <h2>Loading ...</h2>
         </div>
-      )
-    );
+      );
+    }
   };
   return (
     <Layout
@@ -240,11 +271,11 @@ const AddProduct = (props) => {
           {showSuccess()}
           {showError()}
           {newPostForm()}
-          {redirect()}
+          {redirectUser()}
         </div>
       </div>
     </Layout>
   );
 };
 
-export default AddProduct;
+export default UpdateProduct;

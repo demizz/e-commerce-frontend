@@ -10,9 +10,7 @@ export const logout = async (next) => {
 
       next();
     }
-  } catch (err) {
-    console.log(err);
-  }
+  } catch (err) {}
 };
 
 export const isAuth = () => {

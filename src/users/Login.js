@@ -8,11 +8,13 @@ const Login = (props) => {
   const [values, setValues] = useState({
     email: '',
     password: '',
-    error: '',
+    error: false,
     loading: false,
     redirectToReferrer: false,
+    errorMessage:'',
+    success:false
   });
-  const { email, password, loading, error, redirectToReferrer } = values;
+  const { email, password, loading, error,errorMessage,success, redirectToReferrer } = values;
   const handleChange = (name) => (event) => {
     setValues({ ...values, error: false, [name]: event.target.value });
   };
@@ -22,8 +24,10 @@ const Login = (props) => {
     setValues({
       ...values,
       error: false,
+      errorMessage:'',
       loading: true,
       redirectToReferrer: false,
+      success:false
     });
     try {
       const res = await axios({
@@ -31,26 +35,28 @@ const Login = (props) => {
         method: 'POST',
         data: { email, password },
       });
-      console.log(res.data);
+     
       if (res.data.status === 'succes') {
         if (typeof window !== undefined) {
           localStorage.setItem('jwt', res.data.token);
-          console.log('to localStorage', res.data.user);
+         
           localStorage.setItem('data', JSON.stringify(res.data.user));
         }
         setValues({
           ...values,
-
+          error:false,
+          errorMessage:false,
           success: true,
           loading: false,
           redirectToReferrer: true,
         });
       }
     } catch (err) {
-      console.log(err.response.data.message);
+      
       setValues({
         ...values,
-        error: err.response.data.message,
+        error:true,
+        errorMessage: err.response.data.message,
         success: false,
         loading: false,
         redirectToReferrer: false,
@@ -63,7 +69,7 @@ const Login = (props) => {
         className="alert alert-danger"
         style={{ display: error ? '' : 'none' }}
       >
-        {error}
+        {errorMessage}
       </div>
     );
   };
@@ -78,7 +84,7 @@ const Login = (props) => {
   };
   const redirectUser = () => {
     const user = JSON.parse(localStorage.getItem('data'));
-    if (redirectToReferrer) {
+    if (success && redirectToReferrer) {
       if (user.role === 'admin') {
         return <Redirect to="/admin/dashboard" />;
       } else {
@@ -89,7 +95,7 @@ const Login = (props) => {
       return <Redirect to="/" />;
     }
   };
-  const signUpForm = () => {
+  const LoginForm = () => {
     return (
       <form>
         <div className="form-group">
@@ -111,7 +117,7 @@ const Login = (props) => {
           />
         </div>
         <button onClick={submitHandler} className="btn btn-primary">
-          Submit
+         Login
         </button>
       </form>
     );
@@ -122,11 +128,10 @@ const Login = (props) => {
       className="container col-md-8 offset-md-2"
       description="signup to Node React E-commerce App"
     >
-      {process.env.REACT_APP_BACKEND_URL}
-      {URL}
+     
       {showLoading()}
       {showError()}
-      {signUpForm()}
+      {LoginForm()}
       {redirectUser()}
     </Layout>
   );
